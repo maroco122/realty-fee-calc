@@ -22,6 +22,7 @@
         <input type="number" id="price" placeholder="예: 50000000">
         <button onclick="calculateFee()">계산하기</button>
         <h3 id="result"></h3>
+        <p id="calculationDetails"></p>
         <div id="recommendation"></div>
     </div>
 
@@ -45,8 +46,9 @@
             let rate = getFeeRate(price);
             let fee = price * rate;
             let feeWithVAT = fee * 1.1;
-
-            document.getElementById("result").innerHTML = `수수료: ${fee.toLocaleString()} 원 (부가세 포함: ${feeWithVAT.toLocaleString()} 원)`;
+            
+            document.getElementById("result").innerHTML = `총 수수료: ${fee.toLocaleString()} 원 (부가세 포함: ${feeWithVAT.toLocaleString()} 원)`;
+            document.getElementById("calculationDetails").innerHTML = `계산 과정: 거래 금액 (${price.toLocaleString()} 원) × 적용 수수료율 (${(rate * 100).toFixed(2)}%) = ${fee.toLocaleString()} 원, 부가세 포함: ${feeWithVAT.toLocaleString()} 원`;
             
             document.getElementById("recommendation").innerHTML = `
                 <button class='blink' onclick='redirectToProduct()'>추천상품 바로보기</button>
