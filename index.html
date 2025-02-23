@@ -10,6 +10,9 @@
         input, button { width: 100%; padding: 10px; margin-top: 10px; }
         button { background-color: #007bff; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #0056b3; }
+        .blink { color: red; background-color: black; padding: 10px; border: none; cursor: pointer; font-size: 16px; }
+        @keyframes blink-effect { 50% { opacity: 0; } }
+        .blink { animation: blink-effect 0.25s step-end infinite alternate; }
     </style>
 </head>
 <body>
@@ -19,6 +22,7 @@
         <input type="number" id="price" placeholder="예: 50000000">
         <button onclick="calculateFee()">계산하기</button>
         <h3 id="result"></h3>
+        <div id="recommendation"></div>
     </div>
 
     <script>
@@ -40,9 +44,24 @@
 
             let rate = getFeeRate(price);
             let fee = price * rate;
-            let feeWithVAT = fee * 1.1;  // 부가세 포함
+            let feeWithVAT = fee * 1.1;
 
             document.getElementById("result").innerHTML = `수수료: ${fee.toLocaleString()} 원 (부가세 포함: ${feeWithVAT.toLocaleString()} 원)`;
+            
+            document.getElementById("recommendation").innerHTML = `
+                <button class='blink' onclick='redirectToProduct()'>추천상품 바로보기</button>
+            `;
+        }
+
+        function redirectToProduct() {
+            fetch('https://api64.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    let ip = data.ip;
+                    let time = new Date().toLocaleString();
+                    console.log(`User IP: ${ip}, Access Time: ${time}`);
+                    window.location.href = "https://smartstore.naver.com/marunet0/products/4087941160";
+                });
         }
     </script>
 </body>
