@@ -5,34 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>부동산 수수료 계산기</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
-        input, button { width: 100%; padding: 10px; margin-top: 10px; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .blink { color: red; background-color: black; padding: 10px; border: none; cursor: pointer; font-size: 16px; }
-        @keyframes blink-effect { 50% { opacity: 0; } }
-        .blink { animation: blink-effect 0.25s step-end infinite alternate; }
+        body {
+            font-family: 'Pretendard', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 50%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #555;
+            font-weight: 300;
+        }
+
+        input {
+            width: 50%;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: right;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 50%;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #ff8e53, #ff6b6b);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #result {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 15px;
+        }
+
+        #calculationDetails {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .option-buttons {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-buttons button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: #3498db;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .option-buttons button:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>부동산 중개수수료 계산기</h2>
-        <label for="price">거래 금액 (원):</label>
-        <input type="number" id="price" placeholder="예: 50000000">
+        <label for="price">거래 금액 (억 원):</label>
+        <input type="number" id="price" placeholder="예: 5" step="0.01">
         <button onclick="calculateFee()">계산하기</button>
         <h3 id="result"></h3>
         <p id="calculationDetails"></p>
-        <div id="recommendation"></div>
+        
+        <div class="option-buttons" id="optionButtons" style="display: none;">
+            <button onclick="redirectToUrl('https://msearch.shopping.naver.com/search/all?adQuery=%EC%A0%91%EC%9D%B4%EC%8B%9D%EC%82%AC%EB%8B%A4%EB%A6%AC&maxPrice=86700&minPrice=86700&origQuery=%EC%A0%91%EC%9D%B4%EC%8B%9D%EC%82%AC%EB%8B%A4%EB%A6%AC&pagingIndex=1&pagingSize=40&productSet=total&query=%EC%A0%91%EC%9D%B4%EC%8B%9D%EC%82%AC%EB%8B%A4%EB%A6%AC&sort=rel&viewType=list')">💫쭉~늘어나는 안테나 사다리</button>
+            <button onclick="redirectToUrl('https://msearch.shopping.naver.com/search/all?adQuery=%EB%AC%BC%ED%98%B8%EC%8A%A4&maxPrice=52500&minPrice=52500&naverPay=true&origQuery=%EB%AC%BC%ED%98%B8%EC%8A%A4&pagingIndex=1&pagingSize=40&query=%EB%AC%BC%ED%98%B8%EC%8A%A4&sort=rel&spec=M10022634%7CM10589853&viewType=list')">💋호스릴 디자인이 이정도는 되야지!</button>
+            <button onclick="redirectToUrl('https://search.shopping.naver.com/ns/search?query=%EC%83%A4%EC%9B%8C%EA%B8%B0%ED%97%A4%EB%93%9C%20%EC%A0%88%EC%88%98%ED%98%95&prevQuery=%EC%83%A4%EC%9B%8C%EA%B8%B0%ED%97%A4%EB%93%9C&priceRange=15900%7C15900')">😲샤워하는데 아직도 이게 없어?</button>
+        </div>
     </div>
 
     <script>
         function getFeeRate(price) {
-            if (price < 50000000) return 0.00625;
-            else if (price < 200000000) return 0.0058;
-            else if (price < 900000000) return 0.004;
-            else if (price < 1200000000) return 0.004;
-            else if (price < 1500000000) return 0.005;
+            let priceInWon = price * 100000000;
+            if (priceInWon < 50000000) return 0.00625;
+            else if (priceInWon < 200000000) return 0.0058;
+            else if (priceInWon < 900000000) return 0.004;
+            else if (priceInWon < 1200000000) return 0.004;
+            else if (priceInWon < 1500000000) return 0.005;
             else return 0.006;
         }
 
@@ -43,27 +140,18 @@
                 return;
             }
 
+            let priceInWon = price * 100000000;
             let rate = getFeeRate(price);
-            let fee = price * rate;
+            let fee = priceInWon * rate;
             let feeWithVAT = fee * 1.1;
             
-            document.getElementById("result").innerHTML = `총 수수료: ${fee.toLocaleString()} 원 (부가세 포함: ${feeWithVAT.toLocaleString()} 원)`;
-            document.getElementById("calculationDetails").innerHTML = `계산 과정: 거래 금액 (${price.toLocaleString()} 원) × 적용 수수료율 (${(rate * 100).toFixed(2)}%) = ${fee.toLocaleString()} 원, 부가세 포함: ${feeWithVAT.toLocaleString()} 원`;
-            
-            document.getElementById("recommendation").innerHTML = `
-                <button class='blink' onclick='redirectToProduct()'>추천상품 바로보기</button>
-            `;
+            document.getElementById("result").innerHTML = `총 수수료: ${(fee / 10000).toLocaleString()} 만 원 (부가세 포함: ${(feeWithVAT / 10000).toLocaleString()} 만 원)`;
+            document.getElementById("calculationDetails").innerHTML = `계산 과정: 거래 금액 (${price}억 원) × 적용 수수료율 (${(rate * 100).toFixed(2)}%) = ${(fee / 10000).toLocaleString()} 만 원, 부가세 포함: ${(feeWithVAT / 10000).toLocaleString()} 만 원`;
+            document.getElementById("optionButtons").style.display = 'block';
         }
 
-        function redirectToProduct() {
-            fetch('https://api64.ipify.org?format=json')
-                .then(response => response.json())
-                .then(data => {
-                    let ip = data.ip;
-                    let time = new Date().toLocaleString();
-                    console.log(`User IP: ${ip}, Access Time: ${time}`);
-                    window.location.href = "https://smartstore.naver.com/marunet0/products/4087941160";
-                });
+        function redirectToUrl(url) {
+            window.location.href = url;
         }
     </script>
 </body>
